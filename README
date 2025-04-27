@@ -1,0 +1,186 @@
+# Assignment No 1: Computational Modeling Systems
+## Group AJ: Muhammad Saim Akram, Khan
+
+# Cascade Model Simulation
+
+This project implements and analyzes the Duncan Watts threshold model for cascades on random networks. The code simulates how behaviors spread through networks when nodes adopt a behavior only after a threshold fraction of their neighbors have already adopted it.
+
+## Project Structure
+
+- `cascade_Model.py`: Core implementation of the cascade model
+- `figure_generators.py`: Functions to generate key figures from the paper
+- `cascade_analysis.py`: Analysis functions to explore cascade windows and conditions
+- `main.py`: Command-line interface to run various analyses
+
+## Theoretical Background
+
+The model is based on Duncan Watts' threshold model, where each node in a network has a threshold value (φ). A node adopts a behavior only when the fraction of its neighbors who have already adopted exceeds its threshold. 
+
+Key concepts:
+- **Vulnerable nodes**: Nodes with threshold φ ≤ 1/k where k is the node's degree
+- **Cascade window**: Parameter ranges where global cascades are possible
+- **Critical points**: Boundaries of the cascade window
+
+## Running the Analysis
+
+### Full Analysis
+
+To run a comprehensive analysis including all components:
+
+```bash
+python main.py --full
+```
+
+### Individual Analyses
+
+You can run specific analyses with these flags:
+
+```bash
+# Verify critical points
+python main.py --verify-critical
+
+# Generate analytical cascade window
+python main.py --cascade-window
+
+# Analyze vulnerable nodes distribution
+python main.py --vulnerable-nodes
+
+# Generate Figure 3 (cascade size distributions)
+python main.py --figure3
+
+# Generate Figure 4 (effects of heterogeneity)
+python main.py --figure4
+```
+
+### Customizing Parameters
+
+You can customize the analysis parameters:
+
+```bash
+python main.py --full --network-size 5000 --num-sims 500 --phi-star 0.2 --z-value 5.0
+```
+
+## Key Figures
+
+The analysis produces several key figures:
+
+1. **Analytical Cascade Window**: Shows the theoretical boundaries where global cascades occur
+2. **Vulnerable Nodes Distribution**: Analysis of vulnerable nodes and their degree distribution
+3. **Figure 3**: Cascade size distributions at critical points
+4. **Figure 4**: Effects of heterogeneity on cascade windows
+
+## References
+
+This implementation is based on the paper:
+- Watts, D. J. (2002). A simple model of global cascades on random networks. *Proceedings of the National Academy of Sciences*, 99(9), 5766-5771.
+
+## Requirements
+
+- Python 3.5+
+- NetworkX
+- NumPy
+- Matplotlib
+
+### Scope and Purpose
+
+The authors provide a mathematical model to explain one common phenomenon that appears in diverse systems: how occasionally tiny initial jolts are capable of triggering massive, system-level cascades in networks. The phenomenon is seen in:
+
+Cultural trends
+
+Social movements and collective action
+
+Diffusion of norms and innovations
+
+Cascading failures in infrastructure networks
+
+Stock market trends
+
+Watts built this model to explain the "robust but fragile" nature of complex systems - why systems may appear to be stable in response to a large number of perturbations but suddenly exhibit huge, global disruptions from seemingly similar perturbations.
+
+### Methodology
+
+Watts created a mathematical model with:
+
+A random graph of n agents
+Each agent has a threshold φ drawn from distribution f(φ)
+Each agent is connected to k neighbors with probability pk
+All agents begin in state 0 (off)
+A small subset (usually one node) is flipped to state 1, and the spread is observed
+
+The study applies generating functions within graph theory to compute the conditions at which global cascades take place.
+
+### Key Findings
+
+Global cascades require that the subnetwork of vulnerable vertices must percolate throughout the entire network.
+The cascade condition is derived as: 
+
+G'₀(1) = Σk k(k-1)ρkpk = z, with G'₀ a generating function related to vulnerable vertices.
+
+Two phase transitions characterize the "cascade window":
+
+Lower boundary: Similar to ordinary percolation with power-law cascade size distribution
+Upper boundary: Bimodally distributed with sudden, giant cascades
+
+Different types of heterogeneity have opposite impacts:
+
+Higher heterogeneity in thresholds increases the system's susceptibility
+Higher heterogeneity in network degree reduces its susceptibility
+
+In networks with highly skewed degree distributions, targeting high-degree nodes is much more effective for triggering cascades, but only in the low-connectivity regime.
+
+### Key Elements for Implementation
+
+##### Network Generation:
+
+You'll need to create random networks with a specified degree distribution
+
+Libraries like NetworkX are ideal for this (import networkx as nx)
+
+For uniform random graphs: nx.erdos_renyi_graph(n, p)
+
+For power-law networks: nx.configuration_model() with a power-law degree sequence
+
+
+##### Agent Attributes:
+
+Every node (agent) needs:
+
+A state (0 or 1, inactive or active)
+
+A threshold (φ) - either uniform or drawn from a distribution
+
+Neighbors (specified by the network structure)
+
+
+#### Simulation Dynamics:
+
+Initialize all nodes to state 0
+
+Activate a small seed (typically a single node)
+
+Apply threshold rule: an agent flips to state 1 if proportion of neighbors in state 1 ≥ threshold
+
+Update nodes in random asynchronous order
+
+
+##### Parameters to Vary:
+
+Network size (n)
+
+Average degree (z)
+
+Threshold distribution parameters (φ*)
+
+Network type (uniform random)
+
+
+##### Measurements:
+
+Cascade size (proportion of network activated)
+
+Frequency of global cascades
+
+Size distribution of cascades
+
+Time to reach steady state
+
